@@ -1,0 +1,27 @@
+- name: Copy /etc/named.conf to host 
+  template: src=master.named.conf.j2 dest=/etc/named.conf owner=root group=named mode=0640 validate="named-checkconf %s"
+  notify: restart named
+  when: "'bind-server' in group_names"
+
+- name: Ensure /etc/zones directory exists
+  file: path=/etc/named/zones state=directory owner=root group=named mode=0750
+
+- name: Copy forward zone file
+  template: src=db_forward.j2 dest=/etc/named/zones/db.{{ domain }} owner=named group=named mode=0640 validate="named-checkzone {{ domain }} %s"
+  notify: restart named
+
+- name: Enable named service
+  service: name=named state=started enabled=yes
+
+- name: Set this server as the first DNS server
+  lineinfile: 
+    dest=/etc/dhcp/dhclient.conf 
+    regexp="^prepend domain-name-servers (?!{{ ansible_default_ipv4.address }}).*;$" 
+    line="prepend domain-name-servers {{ ansible_default_ipv4.address }};" 
+    create=yes
+    insertbefore=yes
+  notify: restart network
+
+- name: Add DNS service to firewalld
+  firewalld: service=dns permanent=true state=enabled immediate=yes zone={{ firewall_zone }}
+  when: ansible_distribution_major_version == "7"

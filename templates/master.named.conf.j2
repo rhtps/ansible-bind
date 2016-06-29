@@ -1,0 +1,21 @@
+acl ournet {
+	any;
+};
+
+options {
+        listen-on port 53 { 127.0.0.1; {{ ansible_default_ipv4.address }}; };
+#       listen-on-v6 port 53 { ::1; };
+        allow-transfer { {{ ansible_default_ipv4.address }}; };      # disable zone transfers by default
+        allow-query { any; };  # allows queries from "trusted" clients
+        recursion yes;
+        forwarders {
+             {% for forwarder in forwarders %}
+               {{ forwarder }};
+             {% endfor %}
+	};
+};
+
+zone "{{ domain  }}" {
+    type master;
+    file "/etc/named/zones/db.{{ domain }}"; # zone file path
+};

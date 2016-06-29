@@ -1,2 +1,5 @@
 ---
+
 # tasks file for ansible-bind
+- include: install.yml
+- include: configure.yml
