@@ -1,38 +1,60 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+A simple role for setting up a bind server.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Ansbile 2.0 or greater
 
 Role Variables
 --------------
+```yaml
+# defaults file for ansible-bind
+firewall_zone: public
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
+dns_serial: 3
+dns_refresh: 604800
+dns_retry: 86400
+dns_expire: 2419200
+dns_negative_cache_ttl: 604800
+```
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No Dependencies
 
 Example Playbook
 ----------------
+```yaml
+# file: bind.yaml
+- hosts: bind-servers
+  roles:
+  - ansible-bind
+  any_errors_fatal: true
+  vars:
+  - domain: kenscloud.io
+  - forwarders:
+    - 8.8.8.8
+    - 8.8.4.4
+  - a_records:
+    - host: "*.apps.kenscloud.io"
+      ip: 192.168.1.5
+```
+Example Inventory
+-----------------
+```ini
+[bind-servers:children]
+bind-masters
+bind-slaves
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+[bind-masters]
+rheldev
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
+[bind-slaves]
+```
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
