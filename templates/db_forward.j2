@@ -10,5 +10,5 @@
 ; name servers - A records
 ns1.{{ domain }}.          IN      A       {{ ansible_default_ipv4.address }}
 {% for a_record in a_records %}
-{{ a_record.host }}           IN      A        {{ a_record.ip }}
+{{ a_record.host }}.           IN      A        {{ a_record.ip }}
 {% endfor %}
