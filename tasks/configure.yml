@@ -22,6 +22,7 @@
     insertbefore=yes
   notify: restart network
 
-- name: Add DNS service to firewalld
-  firewalld: service=dns permanent=true state=enabled immediate=yes zone={{ firewall_zone }}
-  when: ansible_distribution_major_version == "7"
+# TODO fix firewall logic later
+#- name: Add DNS service to firewalld
+#  firewalld: service=dns permanent=true state=enabled immediate=yes zone={{ firewall_zone }}
+#  when: ansible_distribution_major_version == "7"
