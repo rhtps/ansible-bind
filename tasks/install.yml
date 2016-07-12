@@ -1,6 +1,12 @@
 - name: Install BIND
   yum: name=bind state=present
 
+- name: Be sure firewalld isn't there
+  yum: name=firewalld state=absent
+
+#- name: Also be sure iptables isn't running at all
+#  service: name=iptables state=stopped
+
 - name: Install BIND Utils
   yum: name=bind-utils state=present
 
