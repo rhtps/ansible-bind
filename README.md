@@ -39,7 +39,7 @@ Example Playbook
     - 8.8.8.8
     - 8.8.4.4
   - a_records:
-    - host: "*.apps.kenscloud.io"
+    - host: "*.apps"
       ip: 192.168.1.5
 ```
 Example Inventory
