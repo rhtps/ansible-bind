@@ -13,13 +13,20 @@
 - name: Enable named service
   service: name=named state=started enabled=yes
 
+- name: Remove instances of this nameserver from /etc/dhcp/dhclient.conf
+  lineinfile: 
+    dest=/etc/dhcp/dhclient.conf 
+    create=yes
+    regexp="^prepend domain-name-servers {{ ansible_default_ipv4.address }};$" 
+    state=absent
+
 - name: Set this server as the first DNS server
   lineinfile: 
     dest=/etc/dhcp/dhclient.conf 
-    regexp="^prepend domain-name-servers (?!{{ ansible_default_ipv4.address }}).*;$" 
     line="prepend domain-name-servers {{ ansible_default_ipv4.address }};" 
+    state=present
     create=yes
-    insertbefore=yes
+    insertbefore=BOF
   notify: restart network
 
 - name: Add DNS service to firewalld
